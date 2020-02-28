@@ -11,7 +11,7 @@ const libName =
 
 type
   fsw_handle = ptr object
-  fsw_event_flag* = enum
+  fsw_event_flag* {.size: sizeof(cint).} = enum
     NoOp = 0 # No event has occurred
     PlatformSpecific = 1 shl 0 # Platform-specific placeholder for event type that cannot currently be mapped
     Created = 1 shl 1 # An object was created
@@ -28,20 +28,20 @@ type
     Link = 1 shl 12 # The link count of an object has changed
     Overflow = 1 shl 13 #The event queue has overflowed. */
   fsw_cevent* = object
-    path: cstring
-    time_t: cint
-    flags: ptr fsw_event_flag
-    flags_num: cuint
+    path*: cstring
+    time_t*: cint
+    flags*: ptr fsw_event_flag
+    flags_num*: cuint
   fsw_event_type_filter* = object
-    flag: fsw_event_flag
+    flag*: fsw_event_flag
   fsw_filter_type* = enum
     filter_include,
     filter_exclude
   fsw_cmonitor_filter* = object
-    text: string
-    filter_type: fsw_filter_type
-    case_sensitive: bool
-    extended: bool
+    text*: string
+    filter_type*: fsw_filter_type
+    case_sensitive*: bool
+    extended*: bool
 
 
 proc fsw_init_library*(): cint {.importc, dynlib: libName.}
@@ -81,24 +81,3 @@ proc fsw_last_error*(): cint {.importc, dynlib: libName.}
 proc fsw_is_verbose*(): bool {.importc, dynlib: libName.}
 
 proc fsw_set_verbose*(verbose: bool) {.importc, dynlib: libName.}
-
-
-if fsw_init_library() != 0:
-  echo "Error init library"
-  quit(QuitFailure)
-
-var handle = fsw_init_session(0)
-if fsw_add_path(handle, "/tmp/test/") != 0:
-  echo "Error adding path"
-  quit(QuitFailure)
-
-proc callback(event: fsw_cevent, event_num: cuint) =
-  # echo &"events = {event}"
-  echo event.path
-
-if fsw_set_callback(handle, callback) != 0:
-  echo "Cannot set callback"
-  quit(QuitFailure)
-
-
-discard fsw_start_monitor(handle)
