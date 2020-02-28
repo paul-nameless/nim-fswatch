@@ -15,5 +15,15 @@ nimble install libfswatch
 
 ```nim
 import libfswatch
+import libfswatch/fswatch
 
+proc callback(event: fsw_cevent, event_num: cuint) =
+  echo event.path
+
+var mon = newMonitor()
+
+mon.addPath("/tmp/test/")
+mon.setCallback(callback)
+
+mon.start()
 ```
