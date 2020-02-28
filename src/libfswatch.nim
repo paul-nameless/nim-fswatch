@@ -10,7 +10,7 @@ const libName =
 
 
 type
-  fsw_handle = ptr object
+  fsw_handle* = ptr object
   fsw_event_flag* {.size: sizeof(cint).} = enum
     NoOp = 0 # No event has occurred
     PlatformSpecific = 1 shl 0 # Platform-specific placeholder for event type that cannot currently be mapped
