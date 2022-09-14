@@ -5,11 +5,11 @@ type
     handle*: ptr fsw_handle
 
 
-proc newMonitor*(): Monitor =
+proc newMonitor*(monitor_type:fsw_monitor_type = system_default_monitor_type): Monitor =
   if fsw_init_library() != 0:
     echo "Error init library"
     quit(QuitFailure)
-  result.handle = fsw_init_session(0)
+  result.handle = fsw_init_session(monitor_type.cint)
 
 proc addPath*(monitor: Monitor, path: string) =
   if monitor.handle.fsw_add_path(path) != 0:
