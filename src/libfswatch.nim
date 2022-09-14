@@ -42,7 +42,14 @@ type
     filter_type*: fsw_filter_type
     case_sensitive*: bool
     extended*: bool
-
+  fsw_monitor_type* = enum
+    system_default_monitor_type = 0,
+    fsevents_monitor_type,
+    kqueue_monitor_type,
+    inotify_monitor_type,
+    windows_monitor_type,
+    poll_monitor_type,
+    fen_monitor_type
 
 proc fsw_init_library*(): cint {.importc, dynlib: libName.}
 
